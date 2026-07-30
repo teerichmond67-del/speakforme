@@ -2,6 +2,9 @@
   const speakInput = document.getElementById('speak-input');
   const speakButton = document.getElementById('speak-button');
   const statusPill = document.getElementById('status-pill');
+  const undoRow = document.getElementById('undo-row');
+  const undoPreview = document.getElementById('undo-preview');
+  const undoButton = document.getElementById('undo-button');
 
   const historyToggle = document.getElementById('history-toggle');
   const historyPanel = document.getElementById('history-panel');
@@ -69,10 +72,11 @@
   // ---- Speak bar ----
   async function speakText(text) {
     const trimmed = text.trim();
-    if (!trimmed) return;
+    if (!trimmed) return false;
 
     speakButton.disabled = true;
     setStatus('speaking', 'Speaking…');
+    let success = false;
 
     try {
       const result = await window.speakforme.speak(trimmed, settings.speed);
@@ -84,6 +88,7 @@
           await playBase64Audio(result.audio);
         }
         setStatus('done', 'Done');
+        success = true;
       }
     } catch (err) {
       setStatus('error', 'Error');
@@ -95,7 +100,46 @@
         if (statusPill.dataset.state !== 'speaking') setStatus('idle', 'Ready');
       }, 1500);
     }
+
+    return success;
   }
+
+  let lastClearedText = null;
+
+  function showUndo(text) {
+    lastClearedText = text;
+    undoPreview.textContent = text.length > 60 ? `${text.slice(0, 60)}…` : text;
+    undoRow.hidden = false;
+  }
+
+  function hideUndo() {
+    undoRow.hidden = true;
+    lastClearedText = null;
+  }
+
+  async function speakTypedInput() {
+    const text = speakInput.value;
+    const trimmed = text.trim();
+    if (!trimmed) return;
+
+    const ok = await speakText(text);
+    if (ok) {
+      speakInput.value = '';
+      showUndo(trimmed);
+    }
+  }
+
+  undoButton.addEventListener('click', () => {
+    if (lastClearedText === null) return;
+    speakInput.value = lastClearedText;
+    hideUndo();
+    speakInput.focus();
+    speakInput.selectionStart = speakInput.selectionEnd = speakInput.value.length;
+  });
+
+  speakInput.addEventListener('input', () => {
+    if (!undoRow.hidden) hideUndo();
+  });
 
   async function playBase64Audio(base64) {
     const binary = atob(base64);
@@ -121,12 +165,12 @@
     URL.revokeObjectURL(url);
   }
 
-  speakButton.addEventListener('click', () => speakText(speakInput.value));
+  speakButton.addEventListener('click', () => speakTypedInput());
 
   speakInput.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      speakText(speakInput.value);
+      speakTypedInput();
     }
   });
 

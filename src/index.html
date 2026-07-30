@@ -18,14 +18,20 @@
     </header>
 
     <main class="app-main">
-      <section class="speak-bar" aria-label="Speak bar">
-        <textarea
-          id="speak-input"
-          placeholder="Type what you want to say, then press Enter…"
-          rows="3"
-          autofocus
-        ></textarea>
-        <button id="speak-button" class="primary-button" type="button">Speak</button>
+      <section class="speak-bar-section" aria-label="Speak bar">
+        <div class="speak-bar">
+          <textarea
+            id="speak-input"
+            placeholder="Type what you want to say, then press Enter…"
+            rows="3"
+            autofocus
+          ></textarea>
+          <button id="speak-button" class="primary-button" type="button">Speak</button>
+        </div>
+        <div id="undo-row" class="undo-row" hidden>
+          <span>Cleared: "<span id="undo-preview"></span>"</span>
+          <button id="undo-button" class="link-button" type="button">Undo</button>
+        </div>
       </section>
 
       <section class="quick-phrases" aria-label="Quick phrases">

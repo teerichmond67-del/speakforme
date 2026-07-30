@@ -131,6 +131,21 @@ button {
   align-items: stretch;
 }
 
+.undo-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.undo-row span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 #speak-input {
   flex: 1;
   font-size: calc(1.3rem * var(--font-scale));
