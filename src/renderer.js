@@ -294,6 +294,7 @@
 
   // ---- Phrase management ----
   manageButton.addEventListener('click', () => {
+    editingIndex = null;
     renderPhraseEditor();
     phrasesModal.hidden = false;
   });
@@ -317,11 +318,60 @@
     renderPhraseGrid();
   });
 
+  let editingIndex = null;
+
   function renderPhraseEditor() {
     phraseEditorList.innerHTML = '';
     phrases.forEach((phrase, index) => {
       const li = document.createElement('li');
       li.className = 'phrase-editor-item';
+
+      if (index === editingIndex) {
+        li.classList.add('editing');
+
+        const fields = document.createElement('div');
+        fields.className = 'phrase-editor-edit-fields';
+
+        const labelInput = document.createElement('input');
+        labelInput.type = 'text';
+        labelInput.value = phrase.label;
+        labelInput.placeholder = 'Button label';
+
+        const textInput = document.createElement('input');
+        textInput.type = 'text';
+        textInput.value = phrase.text;
+        textInput.placeholder = 'Full phrase to speak';
+
+        const categoryInput = document.createElement('input');
+        categoryInput.type = 'text';
+        categoryInput.value = phrase.category || '';
+        categoryInput.placeholder = 'Category';
+
+        fields.appendChild(labelInput);
+        fields.appendChild(textInput);
+        fields.appendChild(categoryInput);
+
+        const saveBtn = makeIconBtn('Save', () => {
+          phrases[index] = {
+            ...phrase,
+            label: labelInput.value.trim() || phrase.label,
+            text: textInput.value.trim() || phrase.text,
+            category: categoryInput.value.trim() || 'Uncategorized'
+          };
+          editingIndex = null;
+          persistPhrases();
+        });
+        const cancelBtn = makeIconBtn('Cancel', () => {
+          editingIndex = null;
+          renderPhraseEditor();
+        });
+
+        li.appendChild(fields);
+        li.appendChild(saveBtn);
+        li.appendChild(cancelBtn);
+        phraseEditorList.appendChild(li);
+        return;
+      }
 
       const body = document.createElement('div');
       body.className = 'phrase-editor-text';
@@ -371,16 +421,8 @@
   }
 
   function editPhrase(index) {
-    const phrase = phrases[index];
-    const label = prompt('Button label:', phrase.label);
-    if (label === null) return;
-    const text = prompt('Full phrase to speak:', phrase.text);
-    if (text === null) return;
-    const category = prompt('Category:', phrase.category || 'Uncategorized');
-    if (category === null) return;
-
-    phrases[index] = { ...phrase, label: label.trim() || phrase.label, text: text.trim() || phrase.text, category: category.trim() || 'Uncategorized' };
-    persistPhrases();
+    editingIndex = index;
+    renderPhraseEditor();
   }
 
   function deletePhrase(index) {

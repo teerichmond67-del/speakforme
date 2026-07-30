@@ -401,4 +401,26 @@ button {
   padding: 0.3rem 0.5rem;
 }
 
+.phrase-editor-item.editing {
+  align-items: stretch;
+  flex-wrap: wrap;
+}
+
+.phrase-editor-edit-fields {
+  flex: 1 1 100%;
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.phrase-editor-edit-fields input {
+  flex: 1;
+  min-width: 120px;
+  padding: 0.4rem;
+  border-radius: 6px;
+  border: 2px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+}
+
 [hidden] { display: none !important; }
