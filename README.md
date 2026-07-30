@@ -24,6 +24,13 @@ API key, then click **Load voices** and pick one. Without a key (or if the API i
 unreachable), SpeakForMe automatically falls back to your operating system's
 built-in voice (macOS `say`, Windows SAPI, Linux `espeak`) so it's never silent.
 
+## One-click launch (Windows)
+
+After running `npm install` once, you don't need Command Prompt again. Right-click
+`Start SpeakForMe.vbs` in the project folder → **Send to** → **Desktop (create
+shortcut)**. Double-click that desktop shortcut any time to open SpeakForMe
+directly, with no console window.
+
 ## Features
 
 - **Speak bar** — type and press Enter to speak instantly; Shift+Enter for a
