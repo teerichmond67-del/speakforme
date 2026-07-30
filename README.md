@@ -26,10 +26,20 @@ built-in voice (macOS `say`, Windows SAPI, Linux `espeak`) so it's never silent.
 
 ## One-click launch (Windows)
 
-After running `npm install` once, you don't need Command Prompt again. Right-click
-`Start SpeakForMe.vbs` in the project folder → **Send to** → **Desktop (create
-shortcut)**. Double-click that desktop shortcut any time to open SpeakForMe
-directly, with no console window.
+After running `npm install` once, you don't need Command Prompt again:
+
+1. Right-click an empty spot on your Desktop → **New** → **Shortcut**.
+2. For the location, enter (adjust the path to where you cloned the repo):
+   ```
+   "<path-to-speakforme>\node_modules\electron\dist\electron.exe" "<path-to-speakforme>"
+   ```
+   e.g. `"C:\Users\you\Desktop\speakforme\node_modules\electron\dist\electron.exe" "C:\Users\you\Desktop\speakforme"`
+3. Name it `SpeakForMe` and finish.
+
+Double-click that shortcut any time to open SpeakForMe directly, no console window.
+(A `Start SpeakForMe.vbs` script is also included in the project folder as an
+alternative, but some machines have Windows Script Host disabled by policy, in
+which case the shortcut above is the reliable option.)
 
 ## Features
 
