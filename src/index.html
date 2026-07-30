@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://api.elevenlabs.io; style-src 'self' 'unsafe-inline'; media-src 'self' blob:;" />
+  <title>SpeakForMe</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="app">
+    <header class="app-header">
+      <h1>SpeakForMe</h1>
+      <div id="status-pill" class="status-pill" data-state="idle">Ready</div>
+      <div class="header-actions">
+        <button id="history-toggle" class="icon-button" type="button" title="History">History</button>
+        <button id="settings-toggle" class="icon-button" type="button" title="Settings">Settings</button>
+      </div>
+    </header>
+
+    <main class="app-main">
+      <section class="speak-bar" aria-label="Speak bar">
+        <textarea
+          id="speak-input"
+          placeholder="Type what you want to say, then press Enter…"
+          rows="3"
+          autofocus
+        ></textarea>
+        <button id="speak-button" class="primary-button" type="button">Speak</button>
+      </section>
+
+      <section class="quick-phrases" aria-label="Quick phrases">
+        <div class="section-heading">
+          <h2>Quick Phrases</h2>
+          <button id="manage-phrases" class="link-button" type="button">Manage phrases</button>
+        </div>
+        <div id="category-tabs" class="category-tabs"></div>
+        <div id="phrase-grid" class="phrase-grid"></div>
+      </section>
+    </main>
+
+    <aside id="history-panel" class="side-panel" hidden>
+      <div class="panel-header">
+        <h2>History</h2>
+        <button id="clear-history" class="link-button" type="button">Clear</button>
+        <button class="icon-button close-panel" data-panel="history-panel" type="button">Close</button>
+      </div>
+      <ul id="history-list" class="history-list"></ul>
+    </aside>
+
+    <div id="settings-modal" class="modal-overlay" hidden>
+      <div class="modal" role="dialog" aria-labelledby="settings-title">
+        <div class="panel-header">
+          <h2 id="settings-title">Settings</h2>
+          <button class="icon-button close-modal" data-modal="settings-modal" type="button">Close</button>
+        </div>
+        <div class="modal-body">
+          <label class="field">
+            <span>ElevenLabs API key</span>
+            <input id="api-key-input" type="password" placeholder="sk-…" autocomplete="off" />
+          </label>
+
+          <label class="field">
+            <span>Voice</span>
+            <div class="voice-row">
+              <select id="voice-select"></select>
+              <button id="load-voices" class="secondary-button" type="button">Load voices</button>
+            </div>
+          </label>
+
+          <label class="field">
+            <span>Speech speed: <span id="speed-value">1.0x</span></span>
+            <input id="speed-input" type="range" min="0.7" max="1.2" step="0.05" value="1.0" />
+          </label>
+
+          <label class="field">
+            <span>Output audio device</span>
+            <select id="output-device-select"></select>
+          </label>
+
+          <label class="field checkbox-field">
+            <input id="always-on-top-input" type="checkbox" />
+            <span>Keep window always on top</span>
+          </label>
+
+          <label class="field checkbox-field">
+            <input id="high-contrast-input" type="checkbox" />
+            <span>High contrast mode</span>
+          </label>
+
+          <label class="field">
+            <span>Text size</span>
+            <select id="text-size-select">
+              <option value="normal">Normal</option>
+              <option value="large" selected>Large</option>
+              <option value="xlarge">Extra large</option>
+            </select>
+          </label>
+
+          <p class="hint">
+            Global hotkey to bring SpeakForMe to focus: <kbd>Ctrl/Cmd+Shift+Space</kbd>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div id="phrases-modal" class="modal-overlay" hidden>
+      <div class="modal" role="dialog" aria-labelledby="phrases-title">
+        <div class="panel-header">
+          <h2 id="phrases-title">Manage Phrases</h2>
+          <button class="icon-button close-modal" data-modal="phrases-modal" type="button">Close</button>
+        </div>
+        <div class="modal-body">
+          <form id="add-phrase-form" class="add-phrase-form">
+            <input id="new-phrase-label" type="text" placeholder="Button label" required />
+            <input id="new-phrase-text" type="text" placeholder="Full phrase to speak" required />
+            <input id="new-phrase-category" type="text" placeholder="Category (optional)" />
+            <button type="submit" class="secondary-button">Add</button>
+          </form>
+          <ul id="phrase-editor-list" class="phrase-editor-list"></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <audio id="player" preload="none"></audio>
+  <script src="renderer.js"></script>
+</body>
+</html>

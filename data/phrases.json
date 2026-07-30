@@ -1,0 +1,11 @@
+[
+  { "id": "greet-1", "category": "Greetings", "label": "Hello", "text": "Hello, thanks for calling." },
+  { "id": "greet-2", "category": "Greetings", "label": "Explain", "text": "Sorry, I can't speak — I'm typing my responses." },
+  { "id": "wait-1", "category": "Waiting", "label": "One moment", "text": "One moment please." },
+  { "id": "wait-2", "category": "Waiting", "label": "Hold on", "text": "Hold on one second." },
+  { "id": "yesno-1", "category": "Yes/No", "label": "Yes", "text": "Yes." },
+  { "id": "yesno-2", "category": "Yes/No", "label": "No", "text": "No." },
+  { "id": "clarify-1", "category": "Clarify", "label": "Repeat?", "text": "Can you say that again?" },
+  { "id": "clarify-2", "category": "Clarify", "label": "Slow down", "text": "Can you slow down a little?" },
+  { "id": "close-1", "category": "Closing", "label": "Goodbye", "text": "Thank you, goodbye." }
+]
