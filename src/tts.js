@@ -51,6 +51,37 @@ async function listVoices(apiKey) {
   return (data.voices || []).map((v) => ({ id: v.voice_id, name: v.name }));
 }
 
+// Clones a voice from one or more uploaded audio samples via ElevenLabs'
+// Instant Voice Cloning API. Returns the new voice so it can be selected
+// immediately, same as any built-in ElevenLabs voice.
+async function addVoice({ apiKey, name, description, samples }) {
+  if (!apiKey) throw new Error('No ElevenLabs API key configured');
+  if (!name || !name.trim()) throw new Error('Voice name is required');
+  if (!samples || !samples.length) throw new Error('At least one audio sample is required');
+
+  const form = new FormData();
+  form.append('name', name.trim());
+  if (description) form.append('description', description);
+  for (const sample of samples) {
+    const bytes = Buffer.from(sample.data, 'base64');
+    form.append('files', new Blob([bytes]), sample.filename || 'sample.mp3');
+  }
+
+  const res = await fetch(`${ELEVENLABS_BASE}/voices/add`, {
+    method: 'POST',
+    headers: { 'xi-api-key': apiKey },
+    body: form
+  });
+
+  if (!res.ok) {
+    const detail = await res.text().catch(() => '');
+    throw new Error(`ElevenLabs error ${res.status}: ${detail.slice(0, 300)}`);
+  }
+
+  const data = await res.json();
+  return { id: data.voice_id, name: name.trim() };
+}
+
 function clampSpeed(speed) {
   const n = Number(speed);
   if (Number.isNaN(n)) return 1.0;
@@ -100,4 +131,4 @@ function speakOSFallback(text, speed) {
   });
 }
 
-module.exports = { speakElevenLabs, listVoices, speakOSFallback };
+module.exports = { speakElevenLabs, listVoices, addVoice, speakOSFallback };

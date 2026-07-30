@@ -130,3 +130,8 @@ ipcMain.handle('tts:list-voices', async (event, apiKey) => {
   const key = apiKey || storage.getSettings().apiKey;
   return tts.listVoices(key);
 });
+
+ipcMain.handle('tts:add-voice', async (event, { name, description, samples }) => {
+  const key = storage.getSettings().apiKey;
+  return tts.addVoice({ apiKey: key, name, description, samples });
+});

@@ -52,6 +52,9 @@ which case the shortcut above is the reliable option.)
   speak it again.
 - **Settings** — API key, voice picker, speech speed, output audio device, text
   size, high-contrast mode, always-on-top toggle.
+- **Custom voice** — upload 1–3 short audio clips of a voice (e.g. your own,
+  recorded before surgery) and SpeakForMe clones it via ElevenLabs so you can
+  speak in that voice going forward.
 
 ## Data storage
 

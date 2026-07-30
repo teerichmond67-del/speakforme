@@ -16,6 +16,10 @@
   const apiKeyInput = document.getElementById('api-key-input');
   const voiceSelect = document.getElementById('voice-select');
   const loadVoicesButton = document.getElementById('load-voices');
+  const customVoiceName = document.getElementById('custom-voice-name');
+  const customVoiceFiles = document.getElementById('custom-voice-files');
+  const customVoiceFileSummary = document.getElementById('custom-voice-file-summary');
+  const addVoiceButton = document.getElementById('add-voice-button');
   const speedInput = document.getElementById('speed-input');
   const speedValue = document.getElementById('speed-value');
   const outputDeviceSelect = document.getElementById('output-device-select');
@@ -276,7 +280,7 @@
   highContrastInput.addEventListener('change', () => saveSettings({ highContrast: highContrastInput.checked }));
   textSizeSelect.addEventListener('change', () => saveSettings({ textSize: textSizeSelect.value }));
 
-  loadVoicesButton.addEventListener('click', async () => {
+  async function loadVoicesList(selectVoiceId) {
     const key = apiKeyInput.value.trim();
     if (!key) {
       alert('Enter your ElevenLabs API key first.');
@@ -287,25 +291,86 @@
     try {
       const voices = await window.speakforme.listVoices(key);
       voiceSelect.innerHTML = '';
+      const wantSelected = selectVoiceId || settings.voiceId;
       voices.forEach((v) => {
         const opt = document.createElement('option');
         opt.value = v.id;
         opt.textContent = v.name;
-        if (v.id === settings.voiceId) opt.selected = true;
+        if (v.id === wantSelected) opt.selected = true;
         voiceSelect.appendChild(opt);
       });
+      if (selectVoiceId) {
+        const opt = voiceSelect.options[voiceSelect.selectedIndex];
+        if (opt) await saveSettings({ voiceId: opt.value, voiceName: opt.textContent });
+      }
     } catch (err) {
       alert(`Could not load voices: ${err.message || err}`);
     } finally {
       loadVoicesButton.disabled = false;
       loadVoicesButton.textContent = 'Load voices';
     }
-  });
+  }
+
+  loadVoicesButton.addEventListener('click', () => loadVoicesList());
 
   voiceSelect.addEventListener('change', () => {
     const opt = voiceSelect.options[voiceSelect.selectedIndex];
     if (!opt) return;
     saveSettings({ voiceId: opt.value, voiceName: opt.textContent });
+  });
+
+  customVoiceFiles.addEventListener('change', () => {
+    const files = Array.from(customVoiceFiles.files || []);
+    customVoiceFileSummary.textContent = files.length
+      ? `${files.length} file${files.length > 1 ? 's' : ''} selected: ${files.map((f) => f.name).join(', ')}`
+      : '';
+  });
+
+  function fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(String(reader.result).split(',')[1] || '');
+      reader.onerror = () => reject(reader.error);
+      reader.readAsDataURL(file);
+    });
+  }
+
+  addVoiceButton.addEventListener('click', async () => {
+    const key = apiKeyInput.value.trim();
+    if (!key) {
+      alert('Enter your ElevenLabs API key first.');
+      return;
+    }
+    const name = customVoiceName.value.trim();
+    if (!name) {
+      alert('Give your custom voice a name.');
+      return;
+    }
+    const files = Array.from(customVoiceFiles.files || []);
+    if (!files.length) {
+      alert('Choose at least one audio sample of the voice.');
+      return;
+    }
+
+    addVoiceButton.disabled = true;
+    addVoiceButton.textContent = 'Cloning voice…';
+    try {
+      const samples = await Promise.all(
+        files.map(async (file) => ({ filename: file.name, data: await fileToBase64(file) }))
+      );
+      const newVoice = await window.speakforme.addVoice(name, '', samples);
+      await loadVoicesList(newVoice.id);
+
+      customVoiceName.value = '';
+      customVoiceFiles.value = '';
+      customVoiceFileSummary.textContent = '';
+      alert(`"${newVoice.name}" is ready and selected as your voice.`);
+    } catch (err) {
+      alert(`Could not create voice: ${err.message || err}`);
+    } finally {
+      addVoiceButton.disabled = false;
+      addVoiceButton.textContent = 'Create voice from sample';
+    }
   });
 
   async function refreshOutputDevices() {
