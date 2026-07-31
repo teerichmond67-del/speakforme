@@ -222,6 +222,26 @@ button {
   font-size: 1.2rem;
 }
 
+.document-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-top: 0.75rem;
+}
+
+.document-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.document-status {
+  font-weight: 600;
+  color: var(--muted);
+}
+
 .category-tabs {
   display: flex;
   gap: 0.5rem;

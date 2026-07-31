@@ -8,6 +8,13 @@
   const moodButtons = document.querySelectorAll('.mood-button');
   const moodHint = document.getElementById('mood-hint');
 
+  const openDocumentButton = document.getElementById('open-document-button');
+  const documentNav = document.getElementById('document-nav');
+  const documentStatus = document.getElementById('document-status');
+  const prevParagraphButton = document.getElementById('prev-paragraph-button');
+  const nextParagraphButton = document.getElementById('next-paragraph-button');
+  const clearDocumentButton = document.getElementById('clear-document-button');
+
   const historyToggle = document.getElementById('history-toggle');
   const historyPanel = document.getElementById('history-panel');
   const historyList = document.getElementById('history-list');
@@ -156,6 +163,66 @@
 
   speakInput.addEventListener('input', () => {
     if (!undoRow.hidden) hideUndo();
+  });
+
+  // ---- Document reader ----
+  let documentParagraphs = [];
+  let documentIndex = -1;
+  let documentFilename = '';
+
+  function loadDocumentParagraph() {
+    speakInput.value = documentParagraphs[documentIndex];
+    hideUndo();
+    documentStatus.textContent = `${documentFilename} — Paragraph ${documentIndex + 1} of ${documentParagraphs.length}`;
+    prevParagraphButton.disabled = documentIndex <= 0;
+    nextParagraphButton.disabled = documentIndex >= documentParagraphs.length - 1;
+    speakInput.focus();
+  }
+
+  openDocumentButton.addEventListener('click', async () => {
+    openDocumentButton.disabled = true;
+    openDocumentButton.textContent = 'Opening…';
+    try {
+      const result = await window.speakforme.openDocument();
+      if (!result) return;
+      if (!result.paragraphs.length) {
+        alert('No readable text was found in that document.');
+        return;
+      }
+      documentParagraphs = result.paragraphs;
+      documentFilename = result.filename;
+      documentIndex = 0;
+      documentNav.hidden = false;
+      loadDocumentParagraph();
+    } catch (err) {
+      alert(`Could not open document: ${err.message || err}`);
+    } finally {
+      openDocumentButton.disabled = false;
+      openDocumentButton.textContent = 'Choose file…';
+    }
+  });
+
+  prevParagraphButton.addEventListener('click', () => {
+    if (documentIndex > 0) {
+      documentIndex -= 1;
+      loadDocumentParagraph();
+    }
+  });
+
+  nextParagraphButton.addEventListener('click', () => {
+    if (documentIndex < documentParagraphs.length - 1) {
+      documentIndex += 1;
+      loadDocumentParagraph();
+    }
+  });
+
+  clearDocumentButton.addEventListener('click', () => {
+    documentParagraphs = [];
+    documentIndex = -1;
+    documentFilename = '';
+    documentNav.hidden = true;
+    documentStatus.textContent = '';
+    speakInput.value = '';
   });
 
   async function playBase64Audio(base64) {

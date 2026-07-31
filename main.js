@@ -1,8 +1,9 @@
-const { app, BrowserWindow, ipcMain, globalShortcut, Menu } = require('electron');
+const { app, BrowserWindow, ipcMain, globalShortcut, Menu, dialog } = require('electron');
 const path = require('path');
 const { randomUUID } = require('crypto');
 const storage = require('./src/storage');
 const tts = require('./src/tts');
+const documentReader = require('./src/document');
 
 let mainWindow = null;
 
@@ -149,4 +150,18 @@ ipcMain.handle('tts:list-voices', async (event, apiKey) => {
 ipcMain.handle('tts:add-voice', async (event, { name, description, samples }) => {
   const key = storage.getSettings().apiKey;
   return tts.addVoice({ apiKey: key, name, description, samples });
+});
+
+// ---- IPC: document reading ----
+ipcMain.handle('document:open', async () => {
+  const result = await dialog.showOpenDialog(mainWindow, {
+    title: 'Choose a document to read',
+    filters: [{ name: 'Documents', extensions: ['pdf', 'docx'] }],
+    properties: ['openFile']
+  });
+  if (result.canceled || !result.filePaths.length) return null;
+
+  const filePath = result.filePaths[0];
+  const paragraphs = await documentReader.extractParagraphs(filePath);
+  return { filename: path.basename(filePath), paragraphs };
 });

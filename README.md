@@ -60,6 +60,10 @@ which case the shortcut above is the reliable option.)
   (and slower) `eleven_v3` model; Neutral stays on the fast model used
   everywhere else. Falls back to your normal voice automatically if a mood
   isn't available on your plan.
+- **Read a Document** — open a Word (.docx) or PDF file and SpeakForMe splits
+  it into paragraph-sized chunks. Step through with Previous/Next; each one
+  loads into the Speak bar so you can review or edit it before pressing
+  Speak. Handy for reading a prepared statement aloud during a call.
 
 ## Data storage
 

@@ -14,6 +14,8 @@ contextBridge.exposeInMainWorld('speakforme', {
   listVoices: (apiKey) => ipcRenderer.invoke('tts:list-voices', apiKey),
   addVoice: (name, description, samples) => ipcRenderer.invoke('tts:add-voice', { name, description, samples }),
 
+  openDocument: () => ipcRenderer.invoke('document:open'),
+
   onFocusSpeakBar: (callback) => {
     const listener = () => callback();
     ipcRenderer.on('focus-speak-bar', listener);

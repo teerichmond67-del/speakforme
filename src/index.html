@@ -47,6 +47,25 @@
         </div>
       </section>
 
+      <section class="document-reader" aria-label="Read a document">
+        <div class="section-heading">
+          <h2>Read a Document</h2>
+        </div>
+        <div class="document-controls">
+          <button id="open-document-button" class="secondary-button" type="button">Choose file…</button>
+          <div id="document-nav" class="document-nav" hidden>
+            <button id="prev-paragraph-button" class="icon-button" type="button">◀ Previous</button>
+            <span id="document-status" class="document-status"></span>
+            <button id="next-paragraph-button" class="icon-button" type="button">Next ▶</button>
+            <button id="clear-document-button" class="link-button" type="button">Clear</button>
+          </div>
+        </div>
+        <p class="hint">
+          Supports Word (.docx) and PDF files. Each paragraph loads into the
+          Speak bar above — review or edit it, then press Speak.
+        </p>
+      </section>
+
       <section class="quick-phrases" aria-label="Quick phrases">
         <div class="section-heading">
           <h2>Quick Phrases</h2>
