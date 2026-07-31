@@ -1,0 +1,19 @@
+{
+  "name": "speakforme",
+  "version": "0.1.0",
+  "description": "Type it, hear it. A desktop app that speaks your typed text aloud in a natural voice so you can take part in phone calls without speaking.",
+  "main": "main.js",
+  "private": true,
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "electron": "^31.0.0"
+  },
+  "dependencies": {
+    "mammoth": "^1.8.0",
+    "pdf-parse": "^1.1.1"
+  }
+}
