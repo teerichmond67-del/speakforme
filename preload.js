@@ -10,7 +10,7 @@ contextBridge.exposeInMainWorld('speakforme', {
   getHistory: () => ipcRenderer.invoke('history:get'),
   clearHistory: () => ipcRenderer.invoke('history:clear'),
 
-  speak: (text, speed) => ipcRenderer.invoke('tts:speak', { text, speed }),
+  speak: (text, speed, mood) => ipcRenderer.invoke('tts:speak', { text, speed, mood }),
   listVoices: (apiKey) => ipcRenderer.invoke('tts:list-voices', apiKey),
   addVoice: (name, description, samples) => ipcRenderer.invoke('tts:add-voice', { name, description, samples }),
 

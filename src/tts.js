@@ -5,8 +5,10 @@ const ELEVENLABS_BASE = 'https://api.elevenlabs.io/v1';
 
 // Speaks via ElevenLabs and returns the raw MP3 bytes for the renderer to play.
 // Throws on any failure (bad key, no network, rate limit, etc.) so the caller
-// can fall back to local OS TTS.
-async function speakElevenLabs({ text, apiKey, voiceId, speed }) {
+// can fall back to local OS TTS. Defaults to the low-latency turbo model;
+// pass modelId: 'eleven_v3' for mood/audio-tag support (slower, more
+// expressive, still Alpha as of this writing).
+async function speakElevenLabs({ text, apiKey, voiceId, speed, modelId }) {
   if (!apiKey) throw new Error('No ElevenLabs API key configured');
   if (!voiceId) throw new Error('No ElevenLabs voice selected');
 
@@ -20,7 +22,7 @@ async function speakElevenLabs({ text, apiKey, voiceId, speed }) {
     },
     body: JSON.stringify({
       text,
-      model_id: 'eleven_turbo_v2_5',
+      model_id: modelId || 'eleven_turbo_v2_5',
       voice_settings: {
         stability: 0.5,
         similarity_boost: 0.75,

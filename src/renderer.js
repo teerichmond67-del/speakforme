@@ -5,6 +5,8 @@
   const undoRow = document.getElementById('undo-row');
   const undoPreview = document.getElementById('undo-preview');
   const undoButton = document.getElementById('undo-button');
+  const moodButtons = document.querySelectorAll('.mood-button');
+  const moodHint = document.getElementById('mood-hint');
 
   const historyToggle = document.getElementById('history-toggle');
   const historyPanel = document.getElementById('history-panel');
@@ -73,6 +75,17 @@
     speakInput.focus();
   }
 
+  // ---- Mood ----
+  let currentMood = 'neutral';
+
+  moodButtons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      currentMood = btn.dataset.mood;
+      moodButtons.forEach((b) => b.classList.toggle('active', b === btn));
+      moodHint.hidden = currentMood === 'neutral';
+    });
+  });
+
   // ---- Speak bar ----
   async function speakText(text) {
     const trimmed = text.trim();
@@ -83,7 +96,7 @@
     let success = false;
 
     try {
-      const result = await window.speakforme.speak(trimmed, settings.speed);
+      const result = await window.speakforme.speak(trimmed, settings.speed, currentMood);
       if (!result.ok) {
         setStatus('error', 'Error');
         console.error('Speak failed:', result.error);

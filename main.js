@@ -88,21 +88,36 @@ ipcMain.handle('phrases:set', (event, list) => storage.setPhrases(list));
 ipcMain.handle('history:get', () => storage.getHistory());
 ipcMain.handle('history:clear', () => storage.clearHistory());
 
+// Mood support: non-neutral moods route through ElevenLabs' eleven_v3 model
+// using inline audio tags for emotional delivery. Neutral (the default)
+// stays on the fast turbo model used everywhere else. The OS fallback and
+// history log always use the plain, untagged text.
+const MOOD_TAGS = {
+  happy: '[cheerfully]',
+  sad: '[sorrowful]',
+  angry: '[frustrated]',
+  excited: '[excited]'
+};
+
 // ---- IPC: text-to-speech ----
-ipcMain.handle('tts:speak', async (event, { text, speed }) => {
+ipcMain.handle('tts:speak', async (event, { text, speed, mood }) => {
   const settings = storage.getSettings();
   const trimmed = String(text || '').trim();
   if (!trimmed) return { ok: false, error: 'Empty text' };
 
   const effectiveSpeed = speed ?? settings.speed;
+  const moodTag = MOOD_TAGS[mood];
+  const modelId = moodTag ? 'eleven_v3' : 'eleven_turbo_v2_5';
+  const ttsText = moodTag ? `${moodTag} ${trimmed}` : trimmed;
   let result;
 
   try {
     const buffer = await tts.speakElevenLabs({
-      text: trimmed,
+      text: ttsText,
       apiKey: settings.apiKey,
       voiceId: settings.voiceId,
-      speed: effectiveSpeed
+      speed: effectiveSpeed,
+      modelId
     });
     result = { ok: true, mode: 'elevenlabs', audio: buffer.toString('base64') };
   } catch (err) {

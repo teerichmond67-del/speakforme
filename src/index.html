@@ -28,6 +28,19 @@
           ></textarea>
           <button id="speak-button" class="primary-button" type="button">Speak</button>
         </div>
+        <div class="mood-row" aria-label="Mood">
+          <span class="mood-label">Mood:</span>
+          <button class="mood-button active" data-mood="neutral" type="button">Neutral</button>
+          <button class="mood-button" data-mood="happy" type="button">Happy</button>
+          <button class="mood-button" data-mood="sad" type="button">Sad</button>
+          <button class="mood-button" data-mood="angry" type="button">Angry</button>
+          <button class="mood-button" data-mood="excited" type="button">Excited</button>
+        </div>
+        <p id="mood-hint" class="hint" hidden>
+          This mood uses a more expressive voice and may take a bit longer to
+          speak. If it's unavailable on your plan, SpeakForMe falls back to
+          your normal voice automatically.
+        </p>
         <div id="undo-row" class="undo-row" hidden>
           <span>Cleared: "<span id="undo-preview"></span>"</span>
           <button id="undo-button" class="link-button" type="button">Undo</button>

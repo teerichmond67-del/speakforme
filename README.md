@@ -55,6 +55,11 @@ which case the shortcut above is the reliable option.)
 - **Custom voice** — upload 1–3 short audio clips of a voice (e.g. your own,
   recorded before surgery) and SpeakForMe clones it via ElevenLabs so you can
   speak in that voice going forward.
+- **Mood** — pick Neutral/Happy/Sad/Angry/Excited above the Speak bar to color
+  how a line is delivered. Non-neutral moods use ElevenLabs' more expressive
+  (and slower) `eleven_v3` model; Neutral stays on the fast model used
+  everywhere else. Falls back to your normal voice automatically if a mood
+  isn't available on your plan.
 
 ## Data storage
 
